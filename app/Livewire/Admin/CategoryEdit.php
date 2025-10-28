@@ -34,7 +34,7 @@ class CategoryEdit extends Component
 
         $this->dispatch('swal', title: 'Good job!', text: 'Kategori berhasil diperbarui!', icon: 'success');
 
-        
+
     }
 
     public function render()

@@ -1,3 +1,4 @@
+@section('title', 'Data Categories')
 <div>
     @if(session()->has('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -63,7 +64,7 @@
                         });
                     });
 
-                    
+
                 });
                 </script>
 

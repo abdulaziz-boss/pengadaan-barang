@@ -1,3 +1,4 @@
+@section('title', 'Tambah categories ')
 <div>
     <section id="multiple-column-form">
         <div class="row match-height">

@@ -1,3 +1,4 @@
+@section('title', 'Edit categories ')
 <div>
     <div>
     <section class="section">

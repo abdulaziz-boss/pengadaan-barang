@@ -11,15 +11,15 @@ class Barang extends Model
 
     protected $fillable = [
         'nama',
-        'kategori_id',
+        'category_id',
         'stok',
         'stok_minimal',
         'satuan',
         'harga_satuan',
     ];
 
-    public function kategori()
+    public function category()
     {
-        return $this->belongsTo(category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }

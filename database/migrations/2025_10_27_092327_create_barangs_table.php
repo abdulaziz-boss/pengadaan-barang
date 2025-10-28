@@ -14,7 +14,7 @@ return new class extends Migration
          Schema::create('barangs', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('cascade');
             $table->integer('stok')->default(0);
             $table->integer('stok_minimal')->default(0);
             $table->string('satuan');

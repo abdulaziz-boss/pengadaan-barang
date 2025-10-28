@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('mazer/assets/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('mazer/assets/compiled/css/iconly.css') }}">
     @stack('css')
+    @livewireStyles
 </head>
 
 <body>

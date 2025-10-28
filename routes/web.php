@@ -14,6 +14,7 @@ use App\Http\Middleware\StaffMiddleware;
 use App\Http\Middleware\ManagerMiddleware;
 use App\Livewire\Manager\DashboardManager;
 use App\Livewire\Admin\Barangs\BarangIndex;
+use App\Livewire\Admin\Barangs\BarangCreate;
 
 
 Route::get('/login', Login::class)->name('login');
@@ -26,7 +27,8 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->name('admi
     Route::get('/categories', Categories::class)->name('categories');
     Route::get('/categories/create', CategoryCreate::class)->name('categories.create');
     Route::get('/categories/edit/{id}', CategoryEdit::class)->name('categories.edit');
-    Route::get('/barangs/barang', BarangIndex::class)->name('barangs.list');
+    Route::get('/barangs', BarangIndex::class)->name('barangs.index');
+    Route::get('/barangs/create', BarangCreate::class)->name('barangs.create');
 
 
 });

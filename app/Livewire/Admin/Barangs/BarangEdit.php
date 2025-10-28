@@ -8,6 +8,6 @@ class BarangEdit extends Component
 {
     public function render()
     {
-        return view('livewire.admin.barangs.barang-edit');
+        return view('livewire.admin.barangs.edit');
     }
 }
