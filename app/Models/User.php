@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'avatar',
     ];
 
     /**
@@ -47,5 +48,15 @@ class User extends Authenticatable
         ];
     }
 
-    
+     public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar && file_exists(storage_path('app/public/' . $this->avatar))) {
+            return asset('storage/' . $this->avatar);
+        }
+
+        // Fallback ke default avatar (letakkan di public/images/default-avatar.png)
+        return asset('images/default-avatar.png');
+    }
+
+
 }

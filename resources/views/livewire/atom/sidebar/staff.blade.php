@@ -83,13 +83,18 @@
             <li class="sidebar-title">Menu</li>
 
             <li class="sidebar-item {{ request()->routeIs('staff.dashboard') ? 'active' : '' }}">
-                <a href="{{ route('staff.dashboard') }}" class="sidebar-link">
+                <a href="{{ route('staff.dashboard') }}" class="sidebar-link"wire:navigate>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
-           
+            <li class="sidebar-item {{ request()->routeIs('staff.pengadaanitem.*') ? 'active' : '' }}">
+                <a href="{{ route('staff.pengadaanitem.index') }}" class="sidebar-link"wire:navigate>
+                    <i class="bi bi-box-seam"></i>
+                    <span>Ajukan Pengadaan</span>
+                </a>
+            </li>
         </ul>
     </div>
 <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; height: 585px; right: 0px;"></div></div>

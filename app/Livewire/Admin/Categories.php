@@ -9,6 +9,7 @@ class Categories extends Component
 {
     public $nama, $deskripsi, $categoryId;
     public $isEdit = false;
+    public $categories;
 
     protected $rules = [
         'nama' => 'required|string|max:255',
@@ -72,10 +73,15 @@ class Categories extends Component
 
     public function render()
     {
+        $this->categories = Category::withCount('barangs')
+            ->orderByDesc('barangs_count')
+            ->get();
+
         return view('livewire.admin.categories', [
-            'categories' => Category::latest()->get(),
+            'categories' => $this->categories,  
         ]);
     }
+
 
 
 }

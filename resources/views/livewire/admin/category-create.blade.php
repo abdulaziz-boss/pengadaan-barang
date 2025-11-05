@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Tambah Kategori</h4>
-                        <a href="{{ route('admin.categories') }}" class="btn btn-danger" wire:navigate>Kembali</a>
+                        <a href="{{ route('admin.categories') }}" class="btn btn-danger" wire:navigate><i class="bi bi-arrow-left me-1"></i>Kembali</a>
                     </div>
                     <div class="card-content">
                         <div class="card-body">

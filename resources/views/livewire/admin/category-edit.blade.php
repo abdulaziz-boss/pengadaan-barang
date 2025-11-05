@@ -19,8 +19,8 @@
                         <textarea wire:model="deskripsi" class="form-control"></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                    <a href="{{ route('admin.categories') }}" class="btn btn-danger" wire:navigate>Kembali</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-1"></i>Simpan Perubahan</button>
+                    <a href="{{ route('admin.categories') }}" class="btn btn-danger" wire:navigate><i class="bi bi-arrow-left me-1"></i>Kembali</a>
                 </form>
                 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
@@ -29,7 +29,8 @@
                                         title: "Good job!",
                                         text: "Kategori berhasil diedit!",
                                         icon: "success",
-                                        confirmButtonText: "OK"
+                                        showConfirmButton: false,
+                                        timer: 1500
                                     }).then(() => {
                                         // Redirect setelah klik OK
                                         window.location.href = "{{ route('admin.categories') }}";

@@ -18,6 +18,7 @@
                         <tr>
                             <th>Nama</th>
                             <th>Deskripsi</th>
+                            <th>Jumlah Barang</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -26,6 +27,7 @@
                         <tr>
                             <td>{{ $category->nama }}</td>
                             <td>{{ $category->deskripsi }}</td>
+                            <td>{{ $category->barangs_count }}</td>
                             <td>
                                 <!-- Tombol Edit tetap jalan -->
                                <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-success btn-sm" wire:navigate>

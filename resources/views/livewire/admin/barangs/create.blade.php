@@ -81,8 +81,8 @@
                         </div>
 
                         <div class="col-12 d-flex justify-content-end mt-4">
-                            <button type="submit" class="btn btn-primary me-1 mb-1">Simpan</button>
-                            <a href="{{ route('admin.barangs.index') }}" class="btn btn-light-danger me-1 mb-1" wire:navigate>Batal</a>
+                            <button type="submit" class="btn btn-primary me-1 mb-1"><i class="bi bi-check-circle me-1"></i>Simpan</button>
+                            <a href="{{ route('admin.barangs.index') }}" class="btn btn-danger me-1 mb-1" wire:navigate> <i class="bi bi-x-circle me-1"></i>Batal</a>
                         </div>
                     </div>
                 </form>
