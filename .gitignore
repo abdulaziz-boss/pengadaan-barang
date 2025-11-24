@@ -21,3 +21,11 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+# Ignore vendor assets from Mazer template
+/public/mazer/assets/extensions/
+/public/mazer/assets/static/
+/public/mazer/assets/js/pages/
+/public/mazer/assets/css/pages/
+
+# Ignore source map files
+*.map
