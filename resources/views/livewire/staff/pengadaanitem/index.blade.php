@@ -25,67 +25,68 @@
                         </div>
 
                         {{-- Tabel barang --}}
-                        <div class="col-12">
-                            <table class="table table-bordered align-middle">
-                                <thead class="bg-primary">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Barang</th>
-                                        <th>Jumlah</th>
-                                        <th>Harga Satuan</th>
-                                        <th>Total</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($items as $index => $item)
+                        <div class="table-responsive">
+                            <div class="col-12">
+                                <table class="table align-middle">
+                                    <thead class="bg-primary text-white" style="color: white !important;">
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>
-                                                <select wire:model="items.{{ $index }}.barang_id"
-                                                        wire:change="updateItem({{ $index }})"
-                                                        class="form-select">
-                                                    <option value="">-- Pilih Barang --</option>
-                                                    @foreach ($barangList as $barang)
-                                                        <option value="{{ $barang->id }}">
-                                                            {{ $barang->nama }} ({{ $barang->category->nama ?? '-' }})
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error("items.$index.barang_id")
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </td>
-
-                                            <td>
-                                                <input type="number" min="1"
-                                                       wire:model="items.{{ $index }}.jumlah"
-                                                       wire:input="updateItem({{ $index }})"
-                                                       class="form-control" style="width: 100px;">
-                                                @error("items.$index.jumlah")
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </td>
-
-                                            <td>Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
-                                            <td>Rp {{ number_format($item['total'], 0, ',', '.') }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                        wire:click="removeItem({{ $index }})"
-                                                        @if(count($items) == 1) disabled @endif>
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </td>
+                                            <th>No</th>
+                                            <th>Nama Barang</th>
+                                            <th>Jumlah</th>
+                                            <th>Harga Satuan</th>
+                                            <th>Total</th>
+                                            <th></th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($items as $index => $item)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>
+                                                    <select wire:model="items.{{ $index }}.barang_id"
+                                                            wire:change="updateItem({{ $index }})"
+                                                            class="form-select">
+                                                        <option value="">-- Pilih Barang --</option>
+                                                        @foreach ($barangList as $barang)
+                                                            <option value="{{ $barang->id }}">
+                                                                {{ $barang->nama }} ({{ $barang->category->nama ?? '-' }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error("items.$index.barang_id")
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
 
-                            <button type="button" wire:click="addItem" class="btn btn-primary btn-sm mt-2">
-                                <i class="bi bi-plus-circle"></i> Tambah Barang
-                            </button>
+                                                <td>
+                                                    <input type="number" min="1"
+                                                        wire:model="items.{{ $index }}.jumlah"
+                                                        wire:input="updateItem({{ $index }})"
+                                                        class="form-control" style="width: 100px;">
+                                                    @error("items.$index.jumlah")
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+
+                                                <td>Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
+                                                <td>Rp {{ number_format($item['total'], 0, ',', '.') }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                            wire:click="removeItem({{ $index }})"
+                                                            @if(count($items) == 1) disabled @endif>
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <button type="button" wire:click="addItem" class="btn btn-primary btn-sm mt-2">
+                                    <i class="bi bi-plus-circle"></i> Tambah Barang
+                                </button>
+                            </div>
                         </div>
-
                         {{-- Total harga --}}
                         <div class="col-12 mt-4 text-end">
                             <h5>Total Harga: <span class="fw-bold text-primary">
@@ -218,24 +219,55 @@
         </div>
     </section>
 
-   <script>
-        window.addEventListener('barang-berhasil-ditambah', event => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Barang baru berhasil ditambahkan!',
-                showConfirmButton: false,
-                timer: 1500
-            }).then(() => {
-                // Setelah alert selesai, redirect ke halaman pengadaan item
-                window.location.href = "{{ route('staff.pengadaanitems.index') }}";
-            });
-        });
-    </script>
-
     <style>
         thead.bg-primary th {
             color: #fff !important;
         }
+
+        .card {
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
     </style>
 </div>
+
+{{-- Script SweetAlert untuk Livewire v3 --}}
+<script>
+document.addEventListener('livewire:init', () => {
+    // Event untuk success dengan redirect
+    Livewire.on('swal-success', (event) => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: event.message,
+            timer: 2000,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            willClose: () => {
+                // Redirect setelah SweetAlert ditutup
+                window.location.href = event.redirect || '{{ route("staff.pengadaanitems.index") }}';
+            }
+        });
+    });
+
+    // Event untuk error
+    Livewire.on('swal-error', (event) => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: event.message,
+            timer: 2000,
+            showConfirmButton: false,
+            timerProgressBar: true
+        });
+    });
+});
+</script>

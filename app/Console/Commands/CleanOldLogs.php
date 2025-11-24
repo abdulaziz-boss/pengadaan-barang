@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Log;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log as LaravelLog; // ← tambahkan ini
 
 class CleanOldLogs extends Command
 {
@@ -16,6 +17,9 @@ class CleanOldLogs extends Command
 
         if ($oldLogs->isEmpty()) {
             $this->info('Tidak ada log yang dihapus.');
+
+            // Log ke laravel.log
+            LaravelLog::info("logs:clean dijalankan, tetapi tidak ada log yang dihapus. (" . now() . ")");
             return;
         }
 
@@ -23,5 +27,8 @@ class CleanOldLogs extends Command
         Log::whereIn('id', $oldLogs->pluck('id'))->delete();
 
         $this->info("Berhasil menghapus {$count} log tertua.");
+
+        // Log ke laravel.log
+        LaravelLog::info("logs:clean berhasil menghapus {$count} log pada " . now());
     }
 }

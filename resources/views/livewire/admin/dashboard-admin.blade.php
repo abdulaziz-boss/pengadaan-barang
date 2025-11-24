@@ -8,7 +8,8 @@
                                 ['title' => 'Total Barang', 'value' => $totalBarang, 'icon' => 'bi-box', 'color' => 'purple'],
                                 ['title' => 'Total Pengadaan', 'value' => $totalPengadaan, 'icon' => 'bi-cart-check', 'color' => 'blue'],
                                 ['title' => 'Total Kategori', 'value' => $totalKategori, 'icon' => 'bi-tags', 'color' => 'green'],
-                                ['title' => 'Total Log Aktivitas', 'value' => $logs->count(), 'icon' => 'bi-activity', 'color' => 'red'],
+                                ['title' => 'Total Log Aktivitas', 'value' => $totalLog, 'icon' => 'bi-activity', 'color' => 'red'],
+
                             ];
                         @endphp
 

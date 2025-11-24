@@ -8,7 +8,6 @@ use App\Models\Pengadaan;
 use App\Models\PengadaanItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Livewire\Component;
 
 class PengadaanIndex extends Component
@@ -48,7 +47,6 @@ class PengadaanIndex extends Component
         }
     }
 
-
     public function loadData()
     {
         $this->barangList = Barang::with('category')->get();
@@ -75,9 +73,6 @@ class PengadaanIndex extends Component
         }
     }
 
-    /**
-     * Live update harga & total item saat barang atau jumlah berubah
-     */
     public function updateItem($index)
     {
         if (!isset($this->items[$index])) return;
@@ -99,20 +94,13 @@ class PengadaanIndex extends Component
         $this->calculateTotal();
     }
 
-    /**
-     * Hitung total harga semua item
-     */
     public function calculateTotal()
     {
         $this->totalHarga = collect($this->items)->sum('total');
     }
 
-    /**
-     * Menambahkan barang baru
-     */
     public function tambahBarang()
     {
-        // Buat kategori baru jika modeKategori 'baru'
         if ($this->modeKategori === 'baru') {
             $this->validate([
                 'newCategory.nama' => 'required|string|max:255|unique:categories,nama',
@@ -126,7 +114,6 @@ class PengadaanIndex extends Component
             $this->newBarang['category_id'] = $category->id;
         }
 
-        // Validasi barang
         $this->validate([
             'newBarang.nama' => 'required|string|max:255|unique:barangs,nama',
             'newBarang.category_id' => 'required|exists:categories,id',
@@ -145,19 +132,20 @@ class PengadaanIndex extends Component
             'stok' => 0,
         ]);
 
-        // Reset form
         $this->reset(['newBarang', 'newCategory', 'modeKategori']);
         $this->loadData();
 
-        // Dispatch event untuk Swal
-        $this->dispatch('barang-berhasil-ditambah');
+        // Livewire v3 SweetAlert2
+        $this->dispatch('swal-success', [
+            'message' => 'Barang baru berhasil ditambahkan!',
+            'redirect' => route('staff.pengadaanitems.index')
+        ]);
     }
 
-    /**
-     * Submit pengajuan pengadaan
-     */
     public function save()
     {
+        $this->resetValidation();
+
         $this->validate([
             'items' => 'required|array|min:1',
             'items.*.barang_id' => 'required|exists:barangs,id',
@@ -169,7 +157,7 @@ class PengadaanIndex extends Component
         );
 
         if (empty($validItems)) {
-            session()->flash('error', 'Minimal satu barang valid harus ditambahkan.');
+            $this->dispatch('swal-error', ['message' => 'Minimal satu barang valid harus ditambahkan.']);
             return;
         }
 
@@ -198,11 +186,15 @@ class PengadaanIndex extends Component
 
             DB::commit();
 
-            session()->flash('success', 'Pengajuan pengadaan berhasil! Kode: ' . $kode);
-            return redirect()->route('staff.pengadaanitems.index');
+            // Kirim event success dengan redirect URL
+            $this->dispatch('swal-success', [
+                'message' => 'Pengajuan pengadaan berhasil! Kode: ' . $kode,
+                'redirect' => route('staff.pengadaanitems.index')
+            ]);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $this->dispatch('swal-error', ['message' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
     }
 

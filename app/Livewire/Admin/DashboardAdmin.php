@@ -54,7 +54,7 @@ class DashboardAdmin extends Component
             'totalPengadaan' => Pengadaan::count(),
             'totalKategori' => Category::count(),
             'recentPengadaan' => Pengadaan::latest()->take(5)->get(),
-            'logs' => Log::latest()->take(5)->get(),
+            'totalLog' => Log::count(), // Hanya total log
             'chartData' => $this->chartData,
             'bulan' => $this->bulan,
         ]);

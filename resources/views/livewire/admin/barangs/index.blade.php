@@ -33,64 +33,108 @@
                         </div>
                     </div>
                     <div class="col-md-6 text-end">
-                        <a href="{{ route('admin.barangs.create') }}" class="btn btn-primary w-65" wire:navigate>
+                       <a href="{{ route('admin.barangs.create') }}"
+                            class="btn btn-primary btn-sm tambah-barang-btn"
+                            wire:navigate>
                             <i class="bi bi-plus-circle"></i> Tambah Barang
                         </a>
+
                     </div>
                 </div>
                 {{-- ========== END MODIFIKASI ========== --}}
-
-                <table class="table" id="table1">
-                    <thead class="bg-primary ">
-                        <tr>
-                            <th>Nama Barang</th>
-                            <th>Kategori</th>
-                            <th>Stok</th>
-                            <th>Stok Minimal</th>
-                            <th>Satuan</th>
-                            <th>Harga Satuan</th>
-                            <th class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($barangs as $barang)
+                <div class="table-responsive">
+                    <table class="table" id="table1">
+                        <thead class="bg-primary ">
                             <tr>
-                                <td>{{ $barang->nama }}</td>
-                                <td>{{ $barang->category->nama ?? '-' }}</td>
-                                <td class="{{ $barang->stok <= $barang->stok_minimal ? 'text-danger fw-bold' : '' }}">
-                                    {{ $barang->stok }}
-                                </td>
-                                <td>{{ $barang->stok_minimal }}</td>
-                                <td>{{ $barang->satuan }}</td>
-                                <td>Rp {{ number_format($barang->harga_satuan, 0, ',', '.') }}</td>
-                                <td class="text-center">
-                                    <a href="{{ route('admin.barangs.show', $barang->id) }}" class="badge bg-primary text-decoration-none" wire:navigate>Lihat</a>
-                                    <a href="{{ route('admin.barangs.edit', $barang->id) }}" class="badge bg-success text-decoration-none" wire:navigate>Edit</a>
-                                    <button wire:click="confirmDelete({{ $barang->id }})" class="badge bg-danger border-0">
-                                        Hapus
-                                    </button>
-                                </td>
+                                <th>Nama Barang</th>
+                                <th>Kategori</th>
+                                <th>Stok</th>
+                                <th>Stok Minimal</th>
+                                <th>Satuan</th>
+                                <th>Harga Satuan</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center">
-                                    @if($search)
-                                        Tidak ada hasil untuk "{{ $search }}"
-                                    @else
-                                        Belum ada data barang
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($barangs as $barang)
+                                <tr>
+                                    <td>{{ $barang->nama }}</td>
+                                    <td>{{ $barang->category->nama ?? '-' }}</td>
+                                    <td class="{{ $barang->stok <= $barang->stok_minimal ? 'text-danger fw-bold' : '' }}">
+                                        {{ $barang->stok }}
+                                    </td>
+                                    <td>{{ $barang->stok_minimal }}</td>
+                                    <td>{{ $barang->satuan }}</td>
+                                    <td>Rp {{ number_format($barang->harga_satuan, 0, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                            <a href="{{ route('admin.barangs.show', $barang->id) }}"
+                                            class="btn btn-primary btn-sm"
+                                            wire:navigate>
+                                            Lihat
+                                            </a>
 
+                                            <a href="{{ route('admin.barangs.edit', $barang->id) }}"
+                                            class="btn btn-success btn-sm"
+                                            wire:navigate>
+                                            Edit
+                                            </a>
+
+                                            <button wire:click="confirmDelete({{ $barang->id }})"
+                                                    class="btn btn-danger btn-sm">
+                                                Hapus
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        @if($search)
+                                            Tidak ada hasil untuk "{{ $search }}"
+                                        @else
+                                            Belum ada data barang
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
                 {{ $barangs->links() }}
             </div>
         </div>
     </section>
     <style>
+        @media (max-width: 575px) {
+            .table .btn {
+                width: 100%;
+            }
+            .table .d-flex {
+                flex-direction: column;
+            }
+        }
+
+        thead.bg-primary th {
+            color: #fff !important;
+        }
+        thead.bg-primary th {
+            color: #fff !important;
+        }
+
+        .tambah-barang-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Responsive — saat mobile tombol jadi full width */
+        @media (max-width: 575px) {
+            .tambah-barang-btn {
+                width: 100%;
+            }
+        }
+
         thead.bg-primary th {
             color: #fff !important;
         }

@@ -96,27 +96,42 @@
     </div>
 
     {{-- APEXCHART --}}
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
-        document.addEventListener('livewire:initialized', () => {
-            const data = @json($chartData ?? []);
-            const bulan = @json($bulan ?? []);
+    function loadChart() {
+        const data = @json($chartData ?? []);
+        const bulan = @json($bulan ?? []);
 
-            if (data.length > 0) {
-                const chart = new ApexCharts(document.querySelector("#chart-pengadaan-bulanan"), {
-                    chart: { type: 'line', height: 320, toolbar: { show: false } },
-                    series: [{ name: "Jumlah Pengadaan", data }],
-                    xaxis: { categories: bulan },
-                    colors: ['#435ebe'],
-                    stroke: { width: 3, curve: 'smooth' },
-                    markers: { size: 5 },
-                    dataLabels: { enabled: true },
-                    grid: { borderColor: '#f1f1f1', strokeDashArray: 3 }
-                });
-                chart.render();
-            }
+        const chartEl = document.querySelector("#chart-pengadaan-bulanan");
+        if (!chartEl) return;
+
+        if (data.length === 0) return;
+
+        // Hancurkan chart lama biar tidak duplikat
+        if (window.staffChart) {
+            window.staffChart.destroy();
+        }
+
+        window.staffChart = new ApexCharts(chartEl, {
+            chart: { type: 'line', height: 320, toolbar: { show: false } },
+            series: [{ name: "Jumlah Pengadaan", data }],
+            xaxis: { categories: bulan },
+            colors: ['#435ebe'],
+            stroke: { width: 3, curve: 'smooth' },
+            markers: { size: 5 },
+            dataLabels: { enabled: true },
+            grid: { borderColor: '#f1f1f1', strokeDashArray: 3 }
         });
-    </script>
+
+        window.staffChart.render();
+    }
+
+    // Untuk pertama kali halaman dimuat
+    document.addEventListener('DOMContentLoaded', loadChart);
+
+    // Untuk navigasi SPA Livewire v3
+    document.addEventListener('livewire:navigated', loadChart);
+</script>
+
 
     {{-- STYLE --}}
     <style>

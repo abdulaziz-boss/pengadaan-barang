@@ -53,12 +53,13 @@ class PengadaanIndex extends Component
 
     public function render()
     {
-        $pengadaans = Pengadaan::with('pengaju')
+        $pengadaans = Pengadaan::withTrashed()
+            ->with('pengaju')
             ->when($this->search, function($query) {
                 $query->where('kode_pengadaan', 'like', "%{$this->search}%");
             })
             ->latest()
-            ->paginate(8); // ✅ hanya pakai paginate, tanpa get()
+            ->paginate(8);
 
         return view('livewire.admin.pengadaans.index', [
             'pengadaans' => $pengadaans,

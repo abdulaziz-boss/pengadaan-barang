@@ -36,14 +36,18 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-success btn-sm" wire:navigate>
+                                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                    <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                    class="btn btn-success btn-sm action-btn"
+                                    wire:navigate>
                                     <i class="bi bi-pencil-square"></i> Edit
-                                </a>
+                                    </a>
 
-                                <button class="btn btn-danger btn-sm"
-                                        wire:click="confirmDelete({{ $category->id }})">
-                                    <i class="bi bi-trash"></i> Hapus
-                                </button>
+                                    <button class="btn btn-danger btn-sm action-btn"
+                                            wire:click="confirmDelete({{ $category->id }})">
+                                        <i class="bi bi-trash"></i> Hapus
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         @empty

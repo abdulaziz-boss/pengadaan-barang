@@ -4,12 +4,14 @@ namespace App\Models;
 
 use App\Traits\Loggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pengadaan extends Model
 {
     use Loggable;
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'kode_pengadaan',
@@ -20,6 +22,7 @@ class Pengadaan extends Model
         'tanggal_pengajuan',
         'tanggal_disetujui',
         'tanggal_selesai',
+        'bukti_pembelian',
     ];
 
     // Relasi ke tabel users

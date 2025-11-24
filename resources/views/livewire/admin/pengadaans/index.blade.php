@@ -1,3 +1,5 @@
+@section('title', 'List pengadaan')
+
 <div>
     <div class="card shadow-sm rounded-4 overflow-hidden">
         <!-- CARD HEADER -->
@@ -11,58 +13,90 @@
         </div>
 
         <!-- CARD BODY -->
-        <div class="card-body">
-            <table class="table align-middle mb-0">
-                <thead class="bg-primary text-white" style="color: white !important;">
-                    <tr>
-                        <th>Kode</th>
-                        <th>Pengaju</th>
-                        <th>Total Harga</th>
-                        <th>Status</th>
-                        <th>Tanggal Pengajuan</th>
-                        <th class="text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($pengadaans as $p)
+        <div class="table-responsive">
+            <div class="card-body">
+                <table class="table align-middle mb-0">
+                    <thead class="bg-primary text-white" style="color: white !important;">
                         <tr>
-                            <td>{{ $p->kode_pengadaan }}</td>
-                            <td>{{ $p->pengaju->name ?? '-' }}</td>
-                            <td>Rp {{ number_format($p->total_harga, 0, ',', '.') }}</td>
-                            <td>
-                                <span class="badge bg-{{ $p->status == 'disetujui' ? 'success' : ($p->status == 'ditolak' ? 'danger' : 'warning') }}">
-                                    {{ ucfirst($p->status) }}
-                                </span>
-                            </td>
-                            <td>{{ $p->tanggal_pengajuan ?? '-' }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('admin.pengadaans.show', $p->id) }}"
-                                   class="badge bg-info text-decoration-none"
-                                   wire:navigate>
-                                   Detail
-                                </a>
-                                <button type="button"
-                                        wire:click="confirmDelete({{ $p->id }})"
-                                        class="badge bg-danger border-0">
-                                    Hapus
-                                </button>
-                            </td>
+                            <th>Kode</th>
+                            <th>Pengaju</th>
+                            <th>Total Harga</th>
+                            <th>Status</th>
+                            <th>Tanggal Pengajuan</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-3">Tidak ada data pengadaan.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse ($pengadaans as $p)
+                            <tr>
+                                <td>{{ $p->kode_pengadaan }}</td>
+                                <td>{{ $p->pengaju->name ?? '-' }}</td>
+                                <td>Rp {{ number_format($p->total_harga, 0, ',', '.') }}</td>
+                                <td>
+                                    @switch($p->status)
+                                        @case('disetujui')
+                                            <span class="badge bg-success">Disetujui</span>
+                                            @break
+                                        @case('ditolak')
+                                            <span class="badge bg-danger">Ditolak</span>
+                                            @break
+                                        @case('selesai')
+                                            <span class="badge bg-primary">Selesai</span>
+                                            @break
+                                        @default
+                                            <span class="badge bg-warning">{{ ucfirst($p->status) }}</span>
+                                    @endswitch
+                                </td>
+                                <td>{{ $p->tanggal_pengajuan ?? '-' }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('admin.pengadaans.show', $p->id) }}"
+                                    class="badge bg-info text-decoration-none"
+                                    wire:navigate>
+                                    Detail
+                                    </a>
+                                    <button type="button"
+                                            wire:click="confirmDelete({{ $p->id }})"
+                                            class="badge bg-danger border-0">
+                                        Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-3">Tidak ada data pengadaan.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
 
-            <div class="p-3">
-                {{ $pengadaans->links() }}
+                <div class="p-3">
+                    {{ $pengadaans->links() }}
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- SWEETALERT SCRIPT -->
+    <!-- STYLE -->
+    <style>
+        thead.bg-primary th {
+            color: #fff !important;
+        }
+
+        .card {
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
+</div>
+<!-- SWEETALERT SCRIPT -->
     @push('scripts')
     <script>
         document.addEventListener('livewire:initialized', () => {
@@ -106,25 +140,5 @@
             });
         });
     </script>
-    @endpush
+     @endpush
 
-    <!-- STYLE -->
-    <style>
-        thead.bg-primary th {
-            color: #fff !important;
-        }
-
-        .card {
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-
-        .card-header {
-            border-bottom: 1px solid #eee;
-        }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-        }
-    </style>
-</div>

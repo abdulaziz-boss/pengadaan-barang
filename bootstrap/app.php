@@ -24,8 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {
-        // Jalankan command pembersihan log setiap 5 hari sekali jam 00:00
-        $schedule->command('logs:clean')->cron('0 0 */5 * *');
+        $schedule->command('logs:clean')->everyMinute();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

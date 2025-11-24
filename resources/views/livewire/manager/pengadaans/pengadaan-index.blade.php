@@ -1,112 +1,116 @@
 <div>
     <div class="card shadow-sm">
+
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Daftar Pengadaan Barang</h5>
 
-            <div class="input-group w-auto">
-                <input wire:model.debounce.500ms="search"
-                       type="text"
-                       class="form-control"
-                       placeholder="Cari nama barang atau pengaju...">
-                <span class="input-group-text bg-light">
-                    <i class="bi bi-search"></i>
-                </span>
+            <div class="d-flex gap-2">
+                <div class="input-group w-auto">
+                    <input wire:model.live="search" type="text" class="form-control" placeholder="Cari kode, barang, atau pengaju...">
+                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                </div>
+
+                <button wire:click="deleteSelected"
+                        class="btn btn-danger btn-sm"
+                        @disabled(count($selected) === 0)>
+                    <i class="bi bi-trash"></i> Hapus
+                </button>
             </div>
         </div>
 
         <div class="card-body">
-            {{-- Alert --}}
-            @if (session()->has('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
 
-            @if (session()->has('danger'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('danger') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            {{-- Table --}}
             <div class="table-responsive">
-                <table class="table table-bordered align-middle text-center">
-                    <thead class="table-light">
+                <table class="table text-center align-middle">
+                    <thead class="bg-primary">
                         <tr>
+                            <th><input type="checkbox" wire:model.live="selectAll"></th>
                             <th>No</th>
-                            <th>Kode Pengadaan</th>
+                            <th>Kode</th>
                             <th>Pengaju</th>
-                            <th>Daftar Barang</th>
+                            <th>Barang</th>
                             <th>Total Harga</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        @forelse ($pengadaans as $index => $pengadaan)
-                            <tr>
+                        @forelse ($pengadaans as $index => $p)
+                            <tr wire:key="pengadaan-{{ $p->id }}">
+                                <td><input type="checkbox" wire:model.live="selected" value="{{ $p->id }}"></td>
                                 <td>{{ $pengadaans->firstItem() + $index }}</td>
-                                <td><strong>{{ $pengadaan->kode_pengadaan }}</strong></td>
-                                <td>{{ $pengadaan->pengaju->name ?? '-' }}</td>
+                                <td><strong>{{ $p->kode_pengadaan }}</strong></td>
+                                <td>{{ $p->pengaju->name ?? '-' }}</td>
+
                                 <td class="text-start">
-                                    <ul class="mb-0">
-                                        @foreach ($pengadaan->items as $item)
-                                            <li>
-                                                {{ $item->barang->nama ?? 'Barang tidak ditemukan' }}
-                                                — <small>{{ $item->jumlah }} {{ $item->barang->satuan ?? '' }}</small>
-                                            </li>
+                                    <ul class="mb-0 list-unstyled">
+                                        @foreach ($p->items as $item)
+                                            <li>{{ $item->barang->nama }} ({{ $item->jumlah }})</li>
                                         @endforeach
                                     </ul>
                                 </td>
-                                <td>Rp {{ number_format($pengadaan->total_harga, 0, ',', '.') }}</td>
-                                <td>
-                                    @switch($pengadaan->status)
-                                        @case('menunggu')
-                                            <span class="badge bg-warning text-dark">Menunggu</span>
-                                            @break
-                                        @case('disetujui')
-                                            <span class="badge bg-success">Disetujui</span>
-                                            @break
-                                        @case('ditolak')
-                                            <span class="badge bg-danger">Ditolak</span>
-                                            @break
-                                        @default
-                                            <span class="badge bg-secondary">-</span>
-                                    @endswitch
-                                </td>
-                                <td>
-                                    @if ($pengadaan->status == 'menunggu')
-                                        <button wire:click="setujui({{ $pengadaan->id }})"
-                                                class="btn btn-success btn-sm">
-                                            <i class="bi bi-check-circle"></i> Setujui
-                                        </button>
 
-                                        <button wire:click="tolak({{ $pengadaan->id }})"
-                                                class="btn btn-danger btn-sm">
-                                            <i class="bi bi-x-circle"></i> Tolak
-                                        </button>
-                                    @else
-                                        <em>-</em>
-                                    @endif
+                                <td>Rp {{ number_format($p->total_harga, 0, ',', '.') }}</td>
+
+                                <td>
+                                    <span class="badge bg-warning text-dark">Diproses</span>
+                                </td>
+
+                                <td>
+                                    <a href="{{ route('manager.pengadaans.show', $p->id) }}"
+                                       class="btn btn-primary btn-sm"
+                                       wire:navigate>
+                                        <i class="bi bi-eye"></i> Lihat
+                                    </a>
                                 </td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="7" class="text-center text-muted">
-                                    Tidak ada data pengadaan ditemukan.
-                                </td>
-                            </tr>
+                            <tr><td colspan="8" class="text-muted">Tidak ada data.</td></tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
 
-            {{-- Pagination --}}
-            <div class=" mt-3">
-                {{ $pengadaans->links() }}
-            </div>
+            {{ $pengadaans->links() }}
+
         </div>
     </div>
+
+    <style>
+        thead.bg-primary th {
+            color: #fff !important;
+        }
+
+        .card {
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    Livewire.on("alert", (data) => {
+        Swal.fire({
+            icon: data.type ?? 'success',
+            title: data.title ?? '',
+            text: data.text ?? '',
+            timer: data.timer ?? 1500,
+            timerProgressBar: true,
+            showConfirmButton: false,
+        });
+    });
+
+});
+</script>

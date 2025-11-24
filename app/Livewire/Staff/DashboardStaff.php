@@ -20,31 +20,42 @@ class DashboardStaff extends Component
     public function mount()
     {
         $userId = Auth::id();
+        $tahun = date('Y');
 
+        // Hitung total-per-status
         $this->totalPengadaan = Pengadaan::where('pengaju_id', $userId)->count();
         $this->totalDiproses  = Pengadaan::where('pengaju_id', $userId)->where('status', 'diproses')->count();
         $this->totalDisetujui = Pengadaan::where('pengaju_id', $userId)->where('status', 'disetujui')->count();
         $this->totalDitolak   = Pengadaan::where('pengaju_id', $userId)->where('status', 'ditolak')->count();
         $this->totalSelesai   = Pengadaan::where('pengaju_id', $userId)->where('status', 'selesai')->count();
 
+        // Latest pengadaan user
         $this->recentPengadaan = Pengadaan::where('pengaju_id', $userId)
             ->latest()
             ->take(5)
             ->get();
 
-        // Data untuk grafik per bulan
-        $pengadaanBulanan = Pengadaan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+        // Ambil data mentah (hanya bulan yg ada datanya)
+        $raw = Pengadaan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
             ->where('pengaju_id', $userId)
-            ->whereYear('created_at', date('Y'))
+            ->whereYear('created_at', $tahun)
             ->groupBy('bulan')
-            ->orderBy('bulan')
-            ->get();
+            ->pluck('total', 'bulan')
+            ->toArray();
 
-        $namaBulan = [1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'Mei',6=>'Jun',7=>'Jul',8=>'Agu',9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'];
+        // MAPPING NAMA BULAN
+        $namaBulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 
-        $this->bulan = $pengadaanBulanan->pluck('bulan')->map(fn($b) => $namaBulan[$b])->toArray();
-        $this->chartData = $pengadaanBulanan->pluck('total')->toArray();
+        // Generate 12 bulan (Jan–Des)
+        $chart = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $chart[] = $raw[$i] ?? 0;
+        }
+
+        $this->bulan = $namaBulan; // Jan–Des
+        $this->chartData = $chart; // array 12 angka lengkap
     }
+
 
     public function render()
     {

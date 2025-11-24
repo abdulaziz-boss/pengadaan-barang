@@ -48,7 +48,7 @@ class LogIndex extends Component
                     ->orWhere('description', 'like', '%' . $this->search . '%');
             })
             ->latest('created_at')
-            ->paginate(5);
+            ->paginate(8);
 
         return view('livewire.admin.logs.log-index', ['logs' => $logs]);
     }

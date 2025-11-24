@@ -3,21 +3,98 @@
 namespace App\Livewire\Staff\Pengadaans;
 
 use Livewire\Component;
-use App\Models\Pengadaan;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use App\Models\Pengadaan;
+use App\Models\PengadaanItem;
+use App\Models\Barang;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PengadaanIndex extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $search = '';
+    public $bukti = [];               // file upload per pengadaan
+    public $showUploadModal = 0;      // ID pengadaan yang modalnya muncul
 
     public function updatingSearch()
     {
         $this->resetPage();
     }
 
+    // ====================================
+    // Upload Bukti Pengadaan
+    // ====================================
+    public function uploadBukti($pengadaanId)
+    {
+        $this->validate([
+            "bukti.$pengadaanId" => 'required|image|max:2048',
+        ]);
+
+        $pengadaan = Pengadaan::find($pengadaanId);
+
+        if (!$pengadaan || $pengadaan->status !== 'disetujui') {
+            session()->flash('error', 'Pengadaan tidak ditemukan atau belum disetujui.');
+            return;
+        }
+
+        // Simpan file ke storage/public/bukti_pengadaan
+        $path = $this->bukti[$pengadaanId]->store('bukti_pengadaan', 'public');
+
+        $pengadaan->bukti_pembelian = $path;
+        $pengadaan->status = 'selesai';
+        $pengadaan->tanggal_selesai = now();
+        $pengadaan->save();
+
+        // Update stok barang otomatis
+        $items = PengadaanItem::where('pengadaan_id', $pengadaan->id)->get();
+        foreach ($items as $item) {
+            $barang = Barang::find($item->barang_id);
+            if ($barang) {
+                $barang->stok += $item->jumlah;
+                $barang->save();
+            }
+        }
+
+        // Setelah berhasil upload bukti
+        $this->dispatch('bukti-uploaded',
+            message: 'Bukti pengadaan berhasil diupload!',
+        );
+
+
+        // Reset modal dan input file
+        unset($this->bukti[$pengadaanId]);
+        $this->showUploadModal = 0;
+    }
+
+    // ====================================
+    // Hapus Pengadaan + file bukti
+    // ====================================
+    public function deletePengadaan($pengadaanId)
+    {
+        $pengadaan = Pengadaan::find($pengadaanId);
+        if (!$pengadaan) {
+            session()->flash('error', 'Pengadaan tidak ditemukan.');
+            return;
+        }
+
+        // Hapus file bukti jika ada
+        if ($pengadaan->bukti_pembelian && Storage::disk('public')->exists($pengadaan->bukti_pembelian)) {
+            Storage::disk('public')->delete($pengadaan->bukti_pembelian);
+        }
+
+        $pengadaan->delete();
+
+        session()->flash('success', 'Pengadaan dan bukti berhasil dihapus.');
+    }
+
+    // ====================================
+    // Render Blade
+    // ====================================
     public function render()
     {
         $pengadaans = Pengadaan::with('pengaju')
@@ -27,11 +104,10 @@ class PengadaanIndex extends Component
                       ->orWhere('status', 'like', "%{$this->search}%");
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(5);
 
         return view('livewire.staff.pengadaans.pengadaan-index', [
             'pengadaans' => $pengadaans
         ]);
     }
 }
-

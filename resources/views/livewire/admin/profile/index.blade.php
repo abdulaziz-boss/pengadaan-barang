@@ -1,3 +1,4 @@
+@section("title", "profile")
 <div>
     <section class="section">
         <div class="row">
@@ -15,7 +16,7 @@
                         <a href="{{ route('admin.profile.edit') }}" class="btn btn-primary mt-2" wire:navigate>
                             <i class="bi bi-pencil-square"></i> Edit Profil
                         </a>
-                        
+
                     </div>
                 </div>
             </div>

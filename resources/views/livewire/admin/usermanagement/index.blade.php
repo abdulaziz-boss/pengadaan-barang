@@ -1,3 +1,4 @@
+@section("title", "management user")
 <div>
     <!-- Card Utama -->
     <div class="card shadow-sm rounded-4 border-0">
@@ -31,58 +32,60 @@
             @endif
 
             <!-- Table -->
-            <table class="table table-hover mb-0 align-middle">
-                <thead class="bg-primary">
-                    <tr>
-                        <th style="width: 5%">No</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Tanggal Dibuat</th>
-                        <th style="width: 20%">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($users as $user)
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-primary">
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>
-                                <span class="badge bg-{{
-                                    $user->role === 'admin' ? 'danger' :
-                                    ($user->role === 'manager' ? 'warning text-dark' : 'success')
-                                }}">
-                                    {{ ucfirst($user->role) }}
-                                </span>
-                            </td>
-                            <td>{{ $user->created_at->format('d/m/Y') }}</td>
-                            <td>
-                                <a href="{{ route('admin.users.edit', $user->id) }}" class="badge bg-success text-decoration-none" wire:navigate>
-                                    Edit
-                                </a>
+                            <th style="width: 5%">No</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Tanggal Dibuat</th>
+                            <th style="width: 20%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($users as $user)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>
+                                    <span class="badge bg-{{
+                                        $user->role === 'admin' ? 'danger' :
+                                        ($user->role === 'manager' ? 'warning text-dark' : 'success')
+                                    }}">
+                                        {{ ucfirst($user->role) }}
+                                    </span>
+                                </td>
+                                <td>{{ $user->created_at->format('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="badge bg-success text-decoration-none" wire:navigate>
+                                        Edit
+                                    </a>
 
-                                @if ($user->id != auth()->id())
-                                    <button
-                                        wire:click="confirmDelete({{ $user->id }})"
-                                        class="badge bg-danger border-0 text-decoration-none"
-                                    >
-                                        Hapus
-                                    </button>
-                                @else
-                                    <span class="badge bg-secondary">Hapus</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-3">
-                                Tidak ada data user.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                    @if ($user->id != auth()->id())
+                                        <button
+                                            wire:click="confirmDelete({{ $user->id }})"
+                                            class="badge bg-danger border-0 text-decoration-none"
+                                        >
+                                            Hapus
+                                        </button>
+                                    @else
+                                        <span class="badge bg-secondary">Hapus</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-3">
+                                    Tidak ada data user.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
